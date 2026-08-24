@@ -1,0 +1,534 @@
+Create a complete responsive web application called **“Campus SnackPass – Canteen Pre-Ordering & Live Token Pass”** using only:
+
+* HTML5
+* CSS3
+* Bootstrap 5.3.3
+* Bootstrap Icons
+* Vanilla JavaScript
+* Browser LocalStorage
+
+Do NOT use React, Angular, Vue, Tailwind CSS, jQuery, or any backend framework.
+
+## 1. Overall Concept
+
+Build a modern college canteen pre-ordering website where students can:
+
+* Browse vegetarian food items
+* Search menu items
+* Filter by category and diet
+* Sort food items
+* Customize food items
+* Add items to an order tray/cart
+* Apply coupon codes
+* Select pickup counter
+* Schedule pickup time
+* Select payment method
+* Use a campus wallet
+* Generate a digital order token
+* View token/order history
+* Track order progress
+* View a live canteen TV/kiosk screen
+
+The application should look like a polished, modern college food-ordering system.
+
+## 2. Design Requirements
+
+Use a professional modern UI with:
+
+* Dark navbar/header
+* Yellow/gold primary accent
+* White/light-gray content background
+* Rounded cards
+* Bootstrap shadows
+* Responsive layouts
+* Bootstrap badges and buttons
+* Bootstrap Icons
+* Mobile-friendly design
+* Desktop-friendly design
+* Clean typography
+* Proper spacing
+* Food images
+* Vegetarian/vegan indicators
+
+The page must remain visually attractive on mobile, tablet, and desktop.
+
+## 3. Header / Navbar
+
+Create a sticky Bootstrap navbar containing:
+
+**Campus SnackPass**
+
+Add:
+
+* Lightning icon/logo
+* “100% Pure Veg” badge
+* “Central University Canteen”
+* “Open Now” status
+
+On the right side add:
+
+1. **TV Kiosk** button
+2. **Wallet: ₹500** button
+3. **Tokens** button with notification count
+4. **Order Tray** button showing:
+
+   * Cart total
+   * Number of items
+
+Use Bootstrap modals/offcanvas for these interactions.
+
+## 4. Hero / Canteen Status Section
+
+Create a dark hero/status section.
+
+Display a live canteen status card containing:
+
+* Kitchen Queue Status
+* “Lunch Rush (Peak Prep Running)”
+* Wait Time: approximately 8 mins
+* Active Queue: 14 Orders
+* Pickup: Counter 1 & 2
+
+Below it create horizontally scrollable category shortcut buttons.
+
+Categories:
+
+* All Items
+* Quick Bites
+* Pizzas & Burgers
+* Beverages
+* Main Meals
+* Combos & Thalis
+* Desserts
+
+## 5. Search / Filter / Sort Section
+
+Create a Bootstrap card containing:
+
+### Search
+
+Search input with placeholder:
+
+“Search paneer wrap, cold coffee, pizza...”
+
+### Diet Filters
+
+Provide:
+
+* All Diets
+* Pure Veg
+* Vegan
+* Gluten-Free
+
+### Sort By
+
+Dropdown options:
+
+* Most Popular
+* Price: Low to High
+* Price: High to Low
+* Fastest Prep Time
+
+Below this create category navigation buttons.
+
+## 6. Menu Grid
+
+Display the heading:
+
+**Campus Vegetarian Menu**
+
+Show the number of filtered items dynamically.
+
+Add:
+
+“All Items 100% Vegetarian”
+
+Create a responsive Bootstrap grid:
+
+* 1 column on extra-small screens
+* 2 columns on small screens
+* 3 columns on large screens
+* 4 columns on extra-large screens
+
+Each food card must contain:
+
+* Food image
+* Food name
+* Description
+* Price
+* Vegetarian/Vegan badge
+* Preparation time
+* Special tag such as Bestseller/Student Favourite
+* Customize/Add button
+
+Use these menu items:
+
+### 1. Cheesy Paneer Tikka Wrap
+
+Price: ₹120
+Category: Quick Bites
+Diet: Veg
+Preparation: 8 minutes
+Popularity: 98
+Tag: Bestseller
+
+Description:
+“Grilled spiced cottage cheese, crunchy bell peppers, mint mayo, and melted cheddar wrapped in a warm tortilla.”
+
+Customization:
+
+* Standard Cheese — Free
+* Extra Cheddar Slice — ₹20
+* Double Mozzarella Blast — ₹35
+* Mild & Creamy — Free
+* Medium Spicy — Free
+* Fiery Jalapeño Kick — ₹10
+
+### 2. Smoky BBQ Paneer Burger
+
+Price: ₹140
+Category: Pizzas & Burgers
+Diet: Veg
+Preparation: 10 minutes
+Popularity: 95
+Tag: Student Favourite
+
+Customization:
+
+* Crispy Jalapeño Bites — ₹30
+* Extra Cheddar Cheese Slice — ₹20
+* Extra BBQ Dip — ₹15
+
+### 3. Iced Caramel Macchiato
+
+Price: ₹90
+Category: Beverages
+Diet: Veg
+Preparation: 4 minutes
+Popularity: 99
+Tag: Exam Fuel
+
+Customization:
+
+* Whole Milk — Free
+* Oat Milk — ₹20
+* Almond Milk — ₹20
+
+### 4. Campus Classic Thali Bowl
+
+Price: ₹160
+Category: Main Meals
+Diet: Veg
+Preparation: 12 minutes
+Popularity: 92
+Tag: Filling Meal
+
+Customization:
+
+* Paneer Butter Masala — Free
+* Kadhai Mushroom — Free
+* Shahi Malai Kofta — ₹25
+
+### 5. Late-Night Exam Saver Combo
+
+Price: ₹150
+Category: Combos
+Diet: Veg
+Preparation: 6 minutes
+Popularity: 97
+Tag: Value Combo
+
+### 6. Margherita Thin Crust Pizza
+
+Price: ₹180
+Category: Pizzas & Burgers
+Diet: Veg
+Preparation: 11 minutes
+Popularity: 89
+Tag: Freshly Baked
+
+### 7. Avocado & Quinoa Buddha Bowl
+
+Price: ₹160
+Category: Main Meals
+Diet: Vegan
+Preparation: 7 minutes
+Popularity: 84
+Tag: Healthy Pick
+
+### 8. Fudgy Molten Choco Lava Cake
+
+Price: ₹85
+Category: Desserts
+Diet: Veg
+Preparation: 5 minutes
+Popularity: 96
+Tag: Sweet Treat
+
+Use suitable food images.
+
+## 7. Filtering
+
+Implement JavaScript filtering based on:
+
+* Category
+* Diet
+* Search text
+
+The results should update dynamically without refreshing the page.
+
+The item count should update automatically.
+
+If no items match, display:
+
+“No vegetarian snacks match your filter”
+
+with a suggestion to clear the filters/search.
+
+## 8. Sorting
+
+Implement:
+
+* Most Popular
+* Price Low to High
+* Price High to Low
+* Fastest Preparation Time
+
+The menu should immediately reorder when the user changes the dropdown.
+
+## 9. Customize Food Modal
+
+When the user clicks Customize:
+
+Open a Bootstrap modal.
+
+Display:
+
+* Food image
+* Food name
+* Description
+* Base price
+* Customization groups
+* Options
+* Additional prices
+
+Allow the user to:
+
+* Select customization options
+* Increase/decrease quantity
+* See dynamically calculated total price
+* Add customized item to cart
+
+## 10. Order Tray / Cart
+
+Use a Bootstrap **offcanvas drawer** from the right side.
+
+Display:
+
+* Cart items
+* Item quantity
+* Selected customization
+* Individual prices
+* Increase quantity
+* Decrease quantity
+* Remove item
+* Clear all
+
+Add:
+
+### Pickup Counter
+
+Options:
+
+* Counter 1: Express Snacks & Beverages
+* Counter 2: Hot Meals & Wraps
+* Counter 3: Bakery & Desserts
+
+### Schedule Pickup
+
+Options:
+
+* ASAP (~8 mins queue)
+* Next Break (11:30 AM)
+* Lunch Hour (1:15 PM)
+* Evening Snacks (4:30 PM)
+
+## 11. Coupon System
+
+Implement these coupons:
+
+* SNACK10 → 10% off above ₹150
+* EXAM50 → ₹50 off above ₹200
+* FRESHER20 → 20% off above ₹300
+
+Validate:
+
+* Coupon code
+* Minimum order amount
+
+Display an error for invalid coupons.
+
+## 12. Payment
+
+Provide three payment methods:
+
+* Campus Wallet
+* UPI / QR
+* Cash
+
+Highlight the selected payment method.
+
+## 13. Billing
+
+Calculate dynamically:
+
+* Subtotal
+* Discount
+* GST 5%
+* Student Pickup Fee = FREE
+* Final Total
+
+Display a button:
+
+**Confirm & Generate Token**
+
+## 14. Campus Wallet
+
+Create a Bootstrap modal.
+
+Initial balance:
+
+**₹500**
+
+Allow quick top-ups:
+
+* ₹100
+* ₹250
+* ₹500
+
+Also allow custom amount.
+
+When recharge is successful, update the balance dynamically.
+
+Store wallet balance in LocalStorage.
+
+## 15. Order Token
+
+After confirming an order:
+
+Generate a random token such as:
+
+**#SP-1234**
+
+Show a Bootstrap modal containing:
+
+* Digital pickup pass
+* Token number
+* Pickup counter
+* Order items
+* Total paid
+
+Create an order status stepper:
+
+1. Placed
+2. Kitchen
+3. Ready
+4. Picked
+
+Add an **Advance Kitchen Progress** button.
+
+Clicking it should move the order through:
+
+Placed → Preparing → Ready → Picked Up
+
+Store orders in LocalStorage.
+
+## 16. Token History
+
+Create a Bootstrap modal called:
+
+**Your Token Pass History**
+
+Display previous orders with:
+
+* Token number
+* Total amount
+* Time
+* Number of items
+* Pickup counter
+* Current status
+
+Store and retrieve the order history using LocalStorage.
+
+## 17. TV Kiosk
+
+Create a full-screen Bootstrap modal for:
+
+**CENTRAL CANTEEN LIVE DISPLAY**
+
+Include:
+
+* Current time
+* Ready for Pickup section
+* Preparing in Kitchen section
+* Pickup counters
+* Estimated preparation time
+
+The kiosk clock should update every second using JavaScript.
+
+Display orders based on their current status.
+
+## 18. LocalStorage
+
+Use LocalStorage for:
+
+* Campus wallet balance
+* Order history
+
+Example:
+
+* `snackpass_wallet`
+* `snackpass_orders`
+
+The data should remain available after refreshing the page.
+
+## 19. Footer
+
+Create a dark footer containing:
+
+**Campus SnackPass • Central University Canteen**
+
+Text:
+
+“Order ahead, skip long canteen queues, and pick up fresh vegetarian meals with live digital tokens.”
+
+Also mention:
+
+“Styled with Bootstrap 5 Framework • Powered by JavaScript”
+
+## 20. Technical Requirements
+
+The final output must be a **single complete HTML file**.
+
+Include:
+
+* Bootstrap 5.3.3 CDN
+* Bootstrap Icons CDN
+* All JavaScript inside `<script>` tags
+* No external JavaScript files
+* No backend
+* No database
+* No frameworks other than Bootstrap
+* Use semantic HTML
+* Use Bootstrap grid system
+* Use Bootstrap utilities wherever possible
+* Use vanilla JavaScript for application logic
+* Use LocalStorage for persistence
+
+Make sure every button and interaction works.
+
+The final code should be directly runnable by saving it as:
+
+`index.html`
+
+Do not provide pseudocode or incomplete sections. Generate the **entire working HTML file**.

@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Campus SnackPass - Canteen Pre-Ordering & Live Token Pass (Bootstrap 5)</title>
+  
+  <!-- Bootstrap 5 CSS & Bootstrap Icons CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body class="bg-light d-flex flex-column min-vh-100">
+
+  <!-- ================= NAVBAR / HEADER ================= -->
+  <header class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow-sm py-2">
+    <div class="container-xl d-flex align-items-center justify-content-between">
+      
+      <!-- Brand Logo -->
+      <a class="navbar-brand d-flex align-items-center gap-2 m-0 text-decoration-none" href="#">
+        <div class="bg-warning text-dark rounded-3 d-flex align-items-center justify-center p-2 fw-bold shadow-sm">
+          <i class="bi bi-lightning-charge-fill fs-5"></i>
+        </div>
+        <div>
+          <div class="d-flex align-items-center gap-2">
+            <span class="fw-bold fs-5 text-white">Campus SnackPass</span>
+            <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill">100% Pure Veg</span>
+          </div>
+          <small class="text-secondary d-none d-sm-block">Central University Canteen • <span class="text-success fw-semibold">● Open Now</span></small>
+        </div>
+      </a>
+
+      <!-- Header Action Controls -->
+      <div class="d-flex align-items-center gap-2">
+        
+        <!-- Canteen TV Display Modal Trigger -->
+        <button class="btn btn-outline-secondary btn-sm text-light fw-bold d-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#kioskModal">
+          <i class="bi bi-tv"></i>
+          <span class="d-none d-md-inline">TV Kiosk</span>
+        </button>
+
+        <!-- Campus Wallet Modal Trigger -->
+        <button class="btn btn-outline-warning btn-sm fw-bold d-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#walletModal">
+          <i class="bi bi-wallet2"></i>
+          <span class="d-none d-sm-inline">Wallet:</span>
+          <span id="header-wallet-balance" class="text-warning fw-bolder">₹500</span>
+        </button>
+
+        <!-- Past Order Tokens History Trigger -->
+        <button class="btn btn-outline-light btn-sm fw-bold position-relative d-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#historyModal">
+          <i class="bi bi-ticket-perforated"></i>
+          <span class="d-none d-md-inline">Tokens</span>
+          <span id="history-count-badge" class="badge rounded-pill bg-danger">0</span>
+        </button>
+
+        <!-- Cart Offcanvas Trigger -->
+        <button class="btn btn-warning btn-sm fw-bold position-relative d-flex align-items-center gap-2 shadow-sm" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas">
+          <i class="bi bi-bag-check-fill"></i>
+          <span class="d-none d-sm-inline">Order Tray</span>
+          <span id="header-cart-total" class="fw-bolder">₹0</span>
+          <span id="header-cart-count" class="badge bg-dark text-warning rounded-pill">0</span>
+        </button>
+
+      </div>
+
+    </div>
+  </header>
+
+
+  <!-- ================= HERO & CANTEEN STATUS BANNER ================= -->
+  <section class="bg-dark text-white border-bottom border-secondary-subtle py-4">
+    <div class="container-xl">
+      
+      <!-- Canteen Live Metrics Alert Bar -->
+      <div class="card bg-black bg-opacity-50 border-secondary text-white p-3 mb-4 rounded-4 shadow-sm">
+        <div class="row align-items-center g-3 text-center text-md-start">
+          
+          <div class="col-12 col-md-4 d-flex align-items-center justify-content-center justify-content-md-start gap-2">
+            <span class="spinner-grow spinner-grow-sm text-success" role="status"></span>
+            <div>
+              <div class="text-uppercase text-secondary small fw-bold">Kitchen Queue Status</div>
+              <div class="text-success fw-bold">Lunch Rush (Peak Prep Running)</div>
+            </div>
+          </div>
+
+          <div class="col-12 col-md-8">
+            <div class="d-flex flex-wrap justify-content-center justify-content-md-end gap-3 gap-lg-4 text-light small fw-medium">
+              <div><i class="bi bi-clock-history text-warning me-1"></i> Wait Time: <strong class="text-white">~8 mins</strong></div>
+              <div><i class="bi bi-people-fill text-info me-1"></i> Active Queue: <strong class="text-warning">14 Orders</strong></div>
+              <div><i class="bi bi-geo-alt-fill text-danger me-1"></i> Pickup: <strong class="text-white">Counter 1 & 2</strong></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Category Quick Badges -->
+      <div class="d-flex gap-2 overflow-x-auto pb-1" id="quick-category-container">
+        <!-- Injected via JavaScript -->
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ================= MAIN CONTENT ================= -->
+  <main class="container-xl py-4 flex-grow-1">
+    
+    <!-- Controls Filter Bar: Search, Diet Filters & Sorting -->
+    <div class="card border-0 shadow-sm rounded-4 p-3 mb-4">
+      <div class="row g-3 align-items-center">
+        
+        <!-- Search Input -->
+        <div class="col-12 col-md-4">
+          <div class="input-group">
+            <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-muted"></i></span>
+            <input type="text" id="search-input" class="form-control bg-light border-start-0" placeholder="Search paneer wrap, cold coffee, pizza...">
+          </div>
+        </div>
+
+        <!-- Diet Selection Pills -->
+        <div class="col-12 col-md-5">
+          <div class="d-flex gap-1 overflow-x-auto" id="diet-filters-container">
+            <!-- Injected via JS -->
+          </div>
+        </div>
+
+        <!-- Sort Dropdown -->
+        <div class="col-12 col-md-3">
+          <div class="d-flex align-items-center gap-2 justify-content-md-end">
+            <label class="form-label small fw-bold text-muted mb-0 text-nowrap">Sort By:</label>
+            <select id="sort-select" class="form-select form-select-sm fw-semibold">
+              <option value="popular">🔥 Most Popular</option>
+              <option value="price-asc">💵 Price: Low to High</option>
+              <option value="price-desc">💎 Price: High to Low</option>
+              <option value="time">⚡ Fastest Prep Time</option>
+            </select>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Main Category Nav Pills -->
+      <hr class="my-3 text-muted">
+      <div class="d-flex gap-2 overflow-x-auto" id="category-tabs-container">
+        <!-- Injected via JS -->
+      </div>
+    </div>
+
+    <!-- Menu Items Grid Header -->
+    <div class="d-flex align-items-center justify-content-between mb-3">
+      <h4 class="fw-bolder text-dark mb-0 d-flex align-items-center gap-2">
+        <span>Campus Vegetarian Menu</span>
+        <span id="menu-count-badge" class="badge bg-warning-subtle text-dark border border-warning rounded-pill fs-6 fw-bold">8 Items</span>
+      </h4>
+      <span class="text-success small fw-bold"><i class="bi bi-check-circle-fill me-1"></i>All Items 100% Vegetarian</span>
+    </div>
+
+    <!-- Menu Items Grid -->
+    <div id="menu-grid" class="row g-4">
+      <!-- Injected via JS -->
+    </div>
+
+  </main>
+
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="bg-dark text-secondary py-4 border-top border-secondary-subtle mt-auto">
+    <div class="container-xl text-center">
+      <div class="fw-bold text-white mb-1">Campus SnackPass • Central University Canteen</div>
+      <p class="small text-muted mb-2">Order ahead, skip long canteen queues, and pick up fresh vegetarian meals with live digital tokens.</p>
+      <div class="small text-secondary">Styled with Bootstrap 5 Framework • Powered by JavaScript</div>
+    </div>
+  </footer>
+
+
+  <!-- ================= BOOTSTRAP 5 OFFCANVAS / MODALS ================= -->
+
+  <!-- 1. CART OFFCANVAS DRAWER -->
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="cartOffcanvas" aria-labelledby="cartOffcanvasLabel">
+    <div class="offcanvas-header bg-dark text-white">
+      <h5 class="offcanvas-title fw-bold d-flex align-items-center gap-2" id="cartOffcanvasLabel">
+        <i class="bi bi-bag-check-fill text-warning"></i>
+        <span>Your Order Tray</span>
+      </h5>
+      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    
+    <div class="offcanvas-body d-flex flex-column" id="cart-drawer-body">
+      <!-- Injected via JS -->
+    </div>
+
+    <div class="p-3 bg-light border-top" id="cart-drawer-footer">
+      <!-- Injected via JS -->
+    </div>
+  </div>
+
+
+  <!-- 2. ITEM CUSTOMIZE MODAL -->
+  <div class="modal fade" id="customizeModal" tabindex="-1" aria-labelledby="customizeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content rounded-4 shadow border-0">
+        <div class="modal-header bg-dark text-white rounded-top-4">
+          <h5 class="modal-title fw-bold" id="cust-modal-title">Customize Item</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4" id="cust-modal-body">
+          <!-- Injected via JS -->
+        </div>
+        <div class="modal-footer bg-light rounded-bottom-4 d-flex justify-content-between">
+          <div class="btn-group border rounded-3 bg-white" role="group">
+            <button type="button" class="btn btn-outline-secondary fw-bold" id="cust-qty-minus">-</button>
+            <button type="button" class="btn btn-white fw-bold px-3" id="cust-qty-val" disabled>1</button>
+            <button type="button" class="btn btn-outline-secondary fw-bold" id="cust-qty-plus">+</button>
+          </div>
+          <button type="button" class="btn btn-warning fw-bold px-4 py-2 d-flex align-items-center gap-3 shadow-sm" id="cust-add-to-cart-btn">
+            <span>Add to Order</span>
+            <span id="cust-modal-total-price" class="fw-bolder">₹0</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- 3. ORDER TOKEN CONFIRMATION MODAL -->
+  <div class="modal fade" id="orderModal" tabindex="-1" aria-labelledby="orderModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content rounded-4 shadow border-0 overflow-hidden">
+        <div class="modal-header bg-dark text-white">
+          <h5 class="modal-title fw-bold text-warning d-flex align-items-center gap-2" id="orderModalLabel">
+            <i class="bi bi-check-circle-fill text-success"></i>
+            <span>Order Token Confirmed!</span>
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4" id="order-modal-body">
+          <!-- Injected via JS -->
+        </div>
+        <div class="modal-footer bg-light justify-content-center">
+          <button type="button" class="btn btn-dark fw-bold w-100 py-2 rounded-3" data-bs-dismiss="modal">
+            Back to Canteen Menu
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- 4. CAMPUS WALLET MODAL -->
+  <div class="modal fade" id="walletModal" tabindex="-1" aria-labelledby="walletModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content rounded-4 shadow border-0">
+        <div class="modal-header bg-dark text-white rounded-top-4">
+          <h5 class="modal-title fw-bold text-warning d-flex align-items-center gap-2" id="walletModalLabel">
+            <i class="bi bi-wallet-fill text-warning"></i>
+            <span>Campus Card Wallet</span>
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          
+          <!-- Balance Display Card -->
+          <div class="card bg-dark text-white border-warning p-4 rounded-4 text-center mb-4 shadow-sm">
+            <span class="text-uppercase text-warning small fw-bold">Available Balance</span>
+            <div id="modal-wallet-balance" class="display-5 fw-bolder text-white my-1">₹500</div>
+            <small class="text-secondary">Linked with Student ID & Canteen Billing</small>
+          </div>
+
+          <!-- Quick Top-up buttons -->
+          <label class="form-label small fw-bold text-muted">Select Quick Top-Up Amount</label>
+          <div class="row g-2 mb-3">
+            <div class="col-4">
+              <button type="button" class="btn btn-outline-warning w-100 fw-bold wallet-preset-btn" data-amt="100">+₹100</button>
+            </div>
+            <div class="col-4">
+              <button type="button" class="btn btn-outline-warning w-100 fw-bold wallet-preset-btn" data-amt="250">+₹250</button>
+            </div>
+            <div class="col-4">
+              <button type="button" class="btn btn-outline-warning w-100 fw-bold wallet-preset-btn" data-amt="500">+₹500</button>
+            </div>
+          </div>
+
+          <!-- Custom Amount input -->
+          <div class="mb-3">
+            <label class="form-label small fw-bold text-muted">Custom Amount (₹)</label>
+            <input type="number" id="wallet-custom-input" class="form-control form-control-lg fw-bold" value="250" min="10">
+          </div>
+
+          <div id="wallet-alert-msg" class="alert alert-success d-none py-2 text-center small fw-bold mb-3" role="alert"></div>
+
+          <button type="button" class="btn btn-warning w-100 fw-bold py-2 shadow-sm" id="recharge-wallet-btn">
+            <i class="bi bi-plus-circle me-1"></i> Top-Up Wallet Now
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- 5. TOKEN HISTORY MODAL -->
+  <div class="modal fade" id="historyModal" tabindex="-1" aria-labelledby="historyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content rounded-4 shadow border-0">
+        <div class="modal-header bg-dark text-white">
+          <h5 class="modal-title fw-bold d-flex align-items-center gap-2" id="historyModalLabel">
+            <i class="bi bi-ticket-detailed-fill text-warning"></i>
+            <span>Your Token Pass History</span>
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4" id="history-modal-body">
+          <!-- Injected via JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- 6. CANTEEN TV DISPLAY KIOSK MODAL -->
+  <div class="modal fade" id="kioskModal" tabindex="-1" aria-labelledby="kioskModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+      <div class="modal-content bg-dark text-white">
+        
+        <div class="modal-header border-secondary p-3 px-4">
+          <div class="d-flex align-items-center gap-3">
+            <div class="bg-warning text-dark p-2 rounded-3 fw-bold fs-4"><i class="bi bi-tv-fill"></i></div>
+            <div>
+              <h4 class="fw-bolder text-warning mb-0">CENTRAL CANTEEN LIVE DISPLAY</h4>
+              <small class="text-secondary">Real-Time Kitchen Queue & Pick-Up Screen</small>
+            </div>
+          </div>
+          <div class="d-flex align-items-center gap-3">
+            <span class="badge bg-secondary fs-6 px-3 py-2 fw-bold" id="kiosk-clock">12:30 PM</span>
+            <button type="button" class="btn btn-outline-danger btn-sm fw-bold" data-bs-dismiss="modal">Close Screen</button>
+          </div>
+        </div>
+
+        <div class="modal-body p-4">
+          <div class="row g-4 h-100">
+            
+            <!-- READY LIST -->
+            <div class="col-12 col-md-6">
+              <div class="card bg-black bg-opacity-75 border-success h-100 p-4 rounded-4 shadow">
+                <div class="d-flex justify-content-between align-items-center border-bottom border-success pb-3 mb-3">
+                  <h4 class="text-success fw-bolder mb-0 d-flex align-items-center gap-2">
+                    <span class="spinner-grow spinner-grow-sm text-success" role="status"></span>
+                    READY FOR PICKUP
+                  </h4>
+                  <span class="badge bg-success text-dark fw-bold">COUNTER 1 & 2</span>
+                </div>
+                <div class="row g-3" id="kiosk-ready-list">
+                  <!-- Injected via JS -->
+                </div>
+              </div>
+            </div>
+
+            <!-- PREPARING LIST -->
+            <div class="col-12 col-md-6">
+              <div class="card bg-black bg-opacity-75 border-warning h-100 p-4 rounded-4 shadow">
+                <div class="d-flex justify-content-between align-items-center border-bottom border-warning pb-3 mb-3">
+                  <h4 class="text-warning fw-bolder mb-0 d-flex align-items-center gap-2">
+                    <span class="spinner-grow spinner-grow-sm text-warning" role="status"></span>
+                    PREPARING IN KITCHEN
+                  </h4>
+                  <span class="badge bg-warning text-dark fw-bold">EST ~5-8 MINS</span>
+                </div>
+                <div class="row g-3" id="kiosk-preparing-list">
+                  <!-- Injected via JS -->
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ================= BOOTSTRAP 5 JS BUNDLE ================= -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+  <!-- ================= JAVASCRIPT APPLICATION LOGIC ================= -->
+  <script>
+    // --- PURE VEGETARIAN CANTEEN MENU DATA ---
+    const CATEGORIES = [
+      { id: 'all', label: 'All Items', icon: 'bi-grid-fill' },
+      { id: 'quick-bites', label: 'Quick Bites', icon: 'bi-cup-hot' },
+      { id: 'pizzas-burgers', label: 'Pizzas & Burgers', icon: 'bi-pie-chart-fill' },
+      { id: 'beverages', label: 'Beverages', icon: 'bi-cup-straw' },
+      { id: 'main-meals', label: 'Main Meals', icon: 'bi-egg-fried' },
+      { id: 'combos', label: 'Combos & Thalis', icon: 'bi-box-seam-fill' },
+      { id: 'desserts', label: 'Desserts', icon: 'bi-cake2-fill' },
+    ];
+
+    const DIET_FILTERS = [
+      { id: 'all', label: 'All Diets' },
+      { id: 'veg', label: '🟢 Pure Veg' },
+      { id: 'vegan', label: '🌱 Vegan' },
+      { id: 'gluten-free', label: '🌾 Gluten-Free' },
+    ];
+
+    const COUPONS = [
+      { code: 'SNACK10', discountPercent: 10, minOrder: 150, description: '10% OFF over ₹150' },
+      { code: 'EXAM50', discountAmount: 50, minOrder: 200, description: '₹50 OFF Exam Fuel' },
+      { code: 'FRESHER20', discountPercent: 20, minOrder: 300, description: '20% OFF Welcome' },
+    ];
+
+    const MENU_ITEMS = [
+      {
+        id: 'm1',
+        name: 'Cheesy Paneer Tikka Wrap',
+        description: 'Grilled spiced cottage cheese, crunchy bell peppers, mint mayo, and melted cheddar wrapped in a warm tortilla.',
+        price: 120,
+        category: 'quick-bites',
+        diet: 'veg',
+        image: 'https://images.unsplash.com/photo-1626700051175-6818013e1d4f?auto=format&fit=crop&w=800&q=80',
+        prepTimeMinutes: 8,
+        popularity: 98,
+        tag: 'Bestseller',
+        customizationOptions: [
+          {
+            title: 'Choose Cheese Level',
+            choices: [
+              { id: 'c1', name: 'Standard Cheese', price: 0 },
+              { id: 'c2', name: 'Extra Cheddar Slice', price: 20 },
+              { id: 'c3', name: 'Double Mozzarella Blast', price: 35 }
+            ]
+          },
+          {
+            title: 'Spice Level',
+            choices: [
+              { id: 's1', name: 'Mild & Creamy', price: 0 },
+              { id: 's2', name: 'Medium Spicy (Original)', price: 0 },
+              { id: 's3', name: 'Fiery Jalapeño Kick', price: 10 }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'm2',
+        name: 'Smoky BBQ Paneer Burger',
+        description: 'Grilled spiced paneer patty brushed with rich BBQ glaze, crisp lettuce, tomatoes, and caramelised onions in a toasted brioche bun.',
+        price: 140,
+        category: 'pizzas-burgers',
+        diet: 'veg',
+        image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=800&q=80',
+        prepTimeMinutes: 10,
+        popularity: 95,
+        tag: 'Student Favourite',
+        customizationOptions: [
+          {
+            title: 'Add-Ons',
+            choices: [
+              { id: 'a1', name: 'Crispy Jalapeño Bites', price: 30 },
+              { id: 'a2', name: 'Extra Cheddar Cheese Slice', price: 20 },
+              { id: 'a3', name: 'Extra BBQ Dip', price: 15 }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'm3',
+        name: 'Iced Caramel Macchiato',
+        description: 'Freshly pulled espresso over chilled milk, vanilla syrup, and a decadent golden caramel drizzle.',
+        price: 90,
+        category: 'beverages',
+        diet: 'veg',
+        image: 'https://images.unsplash.com/photo-1517701604599-bb29b565090c?auto=format&fit=crop&w=800&q=80',
+        prepTimeMinutes: 4,
+        popularity: 99,
+        tag: 'Exam Fuel',
+        customizationOptions: [
+          {
+            title: 'Milk Option',
+            choices: [
+              { id: 'mk1', name: 'Whole Milk', price: 0 },
+              { id: 'mk2', name: 'Oat Milk (Vegan)', price: 20 },
+              { id: 'mk3', name: 'Almond Milk', price: 20 }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'm4',
+        name: 'Campus Classic Thali Bowl',
+        description: 'Fragrant basmati jeera rice served with paneer butter masala, yellow dal tadka, mint chutney, and butter garlic naan.',
+        price: 160,
+        category: 'main-meals',
+        diet: 'veg',
+        image: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=800&q=80',
+        prepTimeMinutes: 12,
+        popularity: 92,
+        tag: 'Filling Meal',
+        customizationOptions: [
+          {
+            title: 'Choice of Gravy',
+            choices: [
+              { id: 'g1', name: 'Paneer Butter Masala', price: 0 },
+              { id: 'g2', name: 'Kadhai Mushroom', price: 0 },
+              { id: 'g3', name: 'Shahi Malai Kofta', price: 25 }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'm5',
+        name: 'Late-Night Exam Saver Combo',
+        description: 'Double shot hot Cappuccino + Warm Loaded Chocolate Chip Cookie + Toasted Garlic Cheese Loaf.',
+        price: 150,
+        category: 'combos',
+        diet: 'veg',
+        image: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=800&q=80',
+        prepTimeMinutes: 6,
+        popularity: 97,
+        tag: 'Value Combo'
+      },
+      {
+        id: 'm6',
+        name: 'Margherita Thin Crust Pizza',
+        description: 'Classic 8-inch artisan pizza topped with fresh tomato passata, mozzarella pearls, basil oil, and oregano.',
+        price: 180,
+        category: 'pizzas-burgers',
+        diet: 'veg',
+        image: 'https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?auto=format&fit=crop&w=800&q=80',
+        prepTimeMinutes: 11,
+        popularity: 89,
+        tag: 'Freshly Baked'
+      },
+      {
+        id: 'm7',
+        name: 'Avocado & Quinoa Buddha Bowl',
+        description: 'Nutritious bowl filled with fresh avocado slices, tri-color quinoa, roasted chickpeas, organic greens, and lemon tahini.',
+        price: 160,
+        category: 'main-meals',
+        diet: 'vegan',
+        image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80',
+        prepTimeMinutes: 7,
+        popularity: 84,
+        tag: 'Healthy Pick'
+      },
+      {
+        id: 'm8',
+        name: 'Fudgy Molten Choco Lava Cake',
+        description: 'Warm chocolate cake with a molten Belgian chocolate centre, served with a scoop of vanilla ice cream.',
+        price: 85,
+        category: 'desserts',
+        diet: 'veg',
+        image: 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=800&q=80',
+        prepTimeMinutes: 5,
+        popularity: 96,
+        tag: 'Sweet Treat'
+      }
+    ];
+
+    // --- STATE MANAGEMENT ---
+    let activeCategory = 'all';
+    let activeDiet = 'all';
+    let searchQuery = '';
+    let sortMode = 'popular';
+    
+    let walletBalance = parseFloat(localStorage.getItem('snackpass_wallet') || '500');
+    let cart = [];
+    let appliedCoupon = null;
+    let selectedCounter = 'Counter 1: Express Snacks & Beverages';
+    let selectedSchedule = 'asap';
+    let selectedPayment = 'campus_wallet';
+
+    let orders = JSON.parse(localStorage.getItem('snackpass_orders') || '[]');
+    let currentActiveOrder = null;
+
+    // Bootstrap Modal & Offcanvas Instances
+    let cartOffcanvasInstance = null;
+    let customizeModalInstance = null;
+    let orderModalInstance = null;
+    let walletModalInstance = null;
+
+    // --- INITIALIZE APPLICATION ---
+    window.addEventListener('DOMContentLoaded', () => {
+      cartOffcanvasInstance = new bootstrap.Offcanvas(document.getElementById('cartOffcanvas'));
+      customizeModalInstance = new bootstrap.Modal(document.getElementById('customizeModal'));
+      orderModalInstance = new bootstrap.Modal(document.getElementById('orderModal'));
+      walletModalInstance = new bootstrap.Modal(document.getElementById('walletModal'));
+
+      renderCategoryShortcuts();
+      renderCategoryTabs();
+      renderDietFilters();
+      renderMenuItems();
+      updateHeaderBadges();
+      setupEventListeners();
+      startKioskClock();
+    });
+
+    function startKioskClock() {
+      setInterval(() => {
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        const clockEl = document.getElementById('kiosk-clock');
+        if (clockEl) clockEl.textContent = timeStr;
+      }, 1000);
+    }
+
+    // --- RENDER CATEGORY SHORTCUTS ---
+    function renderCategoryShortcuts() {
+      const container = document.getElementById('quick-category-container');
+      container.innerHTML = CATEGORIES.map(cat => `
+        <button class="btn btn-sm ${activeCategory === cat.id ? 'btn-warning fw-bold' : 'btn-outline-secondary text-light'} rounded-pill text-nowrap d-flex align-items-center gap-1 cat-shortcut-btn" data-id="${cat.id}">
+          <i class="bi ${cat.icon}"></i>
+          <span>${cat.label}</span>
+        </button>
+      `).join('');
+    }
+
+    function renderCategoryTabs() {
+      const container = document.getElementById('category-tabs-container');
+      container.innerHTML = CATEGORIES.map(cat => `
+        <button class="btn btn-sm ${activeCategory === cat.id ? 'btn-warning fw-bold shadow-sm' : 'btn-light text-dark fw-semibold'} rounded-3 text-nowrap d-flex align-items-center gap-1 cat-tab-btn" data-id="${cat.id}">
+          <i class="bi ${cat.icon}"></i>
+          <span>${cat.label}</span>
+        </button>
+      `).join('');
+    }
+
+    function renderDietFilters() {
+      const container = document.getElementById('diet-filters-container');
+      container.innerHTML = DIET_FILTERS.map(df => `
+        <button class="btn btn-sm ${activeDiet === df.id ? 'btn-dark fw-bold' : 'btn-light text-muted fw-semibold'} rounded-pill text-nowrap diet-btn" data-id="${df.id}">
+          ${df.label}
+        </button>
+      `).join('');
+    }
+
+    // --- RENDER MENU ITEMS GRID ---
+    function renderMenuItems() {
+      const grid = document.getElementById('menu-grid');
+      
+      let items = MENU_ITEMS.filter(item => {
+        const matchesCategory = activeCategory === 'all' || item.category === activeCategory;
+        const matchesDiet = activeDiet === 'all' || item.diet === activeDiet;
+        const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                              item.description.toLowerCase().includes(searchQuery.toLowerCase());
+        return matchesCategory && matchesDiet && matchesSearch;
+      });
+
+      if (sortMode === 'price-asc') items.sort((a,b) => a.price - b.price);
+      else if (sortMode === 'price-desc') items.sort((a,b) => b.price - a.price);
+      else if (sortMode === 'time') items.sort((a,b) => a.prepTimeMinutes - b.prepTimeMinutes);
+      else items.sort((a,b) => b.popularity - a.popularity);
+
+      document.getElementById('menu-count-badge').textContent = `${items.length} Items`;
+
+      if (items.length === 0) {
+        grid.innerHTML = `
+          <div class="col-12 text-center py-5">
+            <div class="card border-0 shadow-sm p-5 rounded-4 bg-white">
+              <i class="bi bi-search display-4 text-warning mb-3"></i>
+              <h5 class="fw-bold">No vegetarian snacks match your filter</h5>
+              <p class="text-muted small">Try clearing search terms or selecting another category.</p>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = items.map(item => `
+        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+          <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden d-flex flex-column">
+            
+            <!-- Image Frame -->
+            <div class="position-relative" style="height: 190px;">
+              <img src="${item.image}" alt="${item.name}" class="w-100 h-100 object-fit-cover">
+              
+              <!-- Badges -->
+              ${item.tag ? `<span class="badge bg-dark text-warning position-absolute top-0 start-0 m-3 rounded-pill fw-bold shadow-sm">${item.tag}</span>` : ''}
+              
+              <span class="badge bg-white text-success border border-success-subtle position-absolute top-0 end-0 m-3 rounded-pill shadow-sm fw-bold">
+                <i class="bi bi-record-circle-fill me-1"></i>${item.diet === 'vegan' ? 'Vegan' : 'Veg'}
+              </span>
+
+              <span class="badge bg-dark bg-opacity-75 text-warning position-absolute bottom-0 start-0 m-3 rounded-pill">
+                <i class="bi bi-clock-fill me-1"></i>${item.prepTimeMinutes} mins
+              </span>
+            </div>
+
+            <!-- Card Body -->
+            <div class="card-body d-flex flex-column justify-content-between p-3">
+              <div>
+                <h6 class="card-title fw-bold text-dark mb-1">${item.name}</h6>
+                <p class="card-text text-muted small lh-sm" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${item.description}</p>
+              </div>
+
+              <div class="d-flex align-items-center justify-content-between pt-3 border-top mt-3">
+                <div>
+                  <small class="text-muted text-uppercase d-block" style="font-size: 0.7rem;">Price</small>
+                  <span class="fs-5 fw-bolder text-dark">₹${item.price}</span>
+                </div>
+
+                <button class="btn ${item.customizationOptions ? 'btn-dark' : 'btn-warning'} btn-sm fw-bold px-3 py-2 rounded-3 shadow-sm add-item-btn" data-id="${item.id}">
+                  <i class="bi ${item.customizationOptions ? 'bi-sliders2' : 'bi-plus-lg'} me-1"></i>
+                  ${item.customizationOptions ? 'Customize' : 'Add'}
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      `).join('');
+
+      // Add click handlers for buttons
+      document.querySelectorAll('.add-item-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const itemId = e.currentTarget.dataset.id;
+          handleAddItemClick(itemId);
+        });
+      });
+    }
+
+    // --- SETUP GLOBAL EVENT LISTENERS ---
+    function setupEventListeners() {
+      document.getElementById('search-input').addEventListener('input', (e) => {
+        searchQuery = e.target.value;
+        renderMenuItems();
+      });
+
+      document.getElementById('sort-select').addEventListener('change', (e) => {
+        sortMode = e.target.value;
+        renderMenuItems();
+      });
+
+      // Wallet Topup
+      document.getElementById('recharge-wallet-btn').addEventListener('click', handleWalletRecharge);
+      document.querySelectorAll('.wallet-preset-btn').forEach(b => {
+        b.addEventListener('click', (e) => {
+          document.getElementById('wallet-custom-input').value = e.target.dataset.amt;
+        });
+      });
+
+      // Category Shortcuts
+      document.getElementById('quick-category-container').addEventListener('click', (e) => {
+        const btn = e.target.closest('.cat-shortcut-btn');
+        if (btn) {
+          activeCategory = btn.dataset.id;
+          renderCategoryShortcuts();
+          renderCategoryTabs();
+          renderMenuItems();
+        }
+      });
+
+      document.getElementById('category-tabs-container').addEventListener('click', (e) => {
+        const btn = e.target.closest('.cat-tab-btn');
+        if (btn) {
+          activeCategory = btn.dataset.id;
+          renderCategoryShortcuts();
+          renderCategoryTabs();
+          renderMenuItems();
+        }
+      });
+
+      document.getElementById('diet-filters-container').addEventListener('click', (e) => {
+        const btn = e.target.closest('.diet-btn');
+        if (btn) {
+          activeDiet = btn.dataset.id;
+          renderDietFilters();
+          renderMenuItems();
+        }
+      });
+
+      // History Modal Rendering on Open
+      document.getElementById('historyModal').addEventListener('show.bs.modal', renderHistoryModal);
+      document.getElementById('kioskModal').addEventListener('show.bs.modal', renderKioskLists);
+    }
+
+    // --- CART LOGIC ---
+    function handleAddItemClick(itemId) {
+      const item = MENU_ITEMS.find(m => m.id === itemId);
+      if (!item) return;
+
+      if (item.customizationOptions) {
+        openCustomizeModal(item);
+      } else {
+        addToCart(item, [], 1);
+      }
+    }
+
+    function addToCart(item, options, qty) {
+      const optionPrice = options.reduce((sum, opt) => sum + opt.option.price, 0);
+      const calculatedPrice = item.price + optionPrice;
+      const cartItemId = `${item.id}-${options.map(o => o.option.id).sort().join('_') || 'default'}`;
+
+      const existingIndex = cart.findIndex(c => c.cartItemId === cartItemId);
+      if (existingIndex > -1) {
+        cart[existingIndex].quantity += qty;
+      } else {
+        cart.push({
+          cartItemId,
+          item,
+          quantity: qty,
+          selectedOptions: options,
+          calculatedPrice
+        });
+      }
+
+      updateHeaderBadges();
+      renderCartDrawerContent();
+      cartOffcanvasInstance.show();
+    }
+
+    function updateHeaderBadges() {
+      const cartCount = cart.reduce((sum, c) => sum + c.quantity, 0);
+      const cartSubtotal = cart.reduce((sum, c) => sum + (c.calculatedPrice * c.quantity), 0);
+
+      document.getElementById('header-cart-count').textContent = cartCount;
+      document.getElementById('header-cart-total').textContent = `₹${cartSubtotal}`;
+      document.getElementById('header-wallet-balance').textContent = `₹${walletBalance}`;
+      document.getElementById('modal-wallet-balance').textContent = `₹${walletBalance}`;
+      document.getElementById('history-count-badge').textContent = orders.length;
+    }
+
+    function renderCartDrawerContent() {
+      const body = document.getElementById('cart-drawer-body');
+      const footer = document.getElementById('cart-drawer-footer');
+
+      if (cart.length === 0) {
+        body.innerHTML = `
+          <div class="text-center py-5 my-auto">
+            <i class="bi bi-bag-x display-3 text-muted mb-3 d-block"></i>
+            <h6 class="fw-bold">Your Order Tray is Empty</h6>
+            <p class="text-muted small">Choose your favourite vegetarian rolls, bowls, and beverages!</p>
+          </div>
+        `;
+        footer.innerHTML = '';
+        return;
+      }
+
+      // Render Item List
+      body.innerHTML = `
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <span class="small fw-bold text-muted text-uppercase">Items (${cart.length})</span>
+          <button class="btn btn-link btn-sm text-danger text-decoration-none p-0 fw-bold" id="clear-cart-btn">Clear All</button>
+        </div>
+
+        <div class="d-flex flex-column gap-2 mb-4">
+          ${cart.map((c, idx) => `
+            <div class="card border-0 bg-light p-2 rounded-3">
+              <div class="d-flex align-items-center gap-2">
+                <img src="${c.item.image}" class="rounded-2 object-fit-cover" style="width: 48px; height: 48px;" alt="">
+                <div class="flex-grow-1 min-w-0">
+                  <div class="fw-bold small text-truncate">${c.item.name}</div>
+                  ${c.selectedOptions.length > 0 ? `<small class="text-muted d-block" style="font-size: 0.75rem;">${c.selectedOptions.map(o => o.option.name).join(', ')}</small>` : ''}
+                  <span class="text-warning fw-bolder small">₹${c.calculatedPrice * c.quantity}</span>
+                </div>
+                <div class="btn-group btn-group-sm border bg-white rounded-2" role="group">
+                  <button class="btn btn-outline-secondary cart-qty-minus py-0 px-2 fw-bold" data-idx="${idx}">-</button>
+                  <span class="btn btn-white py-0 px-2 fw-bold disabled text-dark">${c.quantity}</span>
+                  <button class="btn btn-outline-secondary cart-qty-plus py-0 px-2 fw-bold" data-idx="${idx}">+</button>
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+
+        <!-- Configurations: Counter, Time, Coupons -->
+        <div class="border-top pt-3 mt-auto">
+          
+          <div class="mb-3">
+            <label class="form-label small fw-bold mb-1">Pick Up Counter</label>
+            <select id="counter-select" class="form-select form-select-sm fw-semibold">
+              <option value="Counter 1: Express Snacks & Beverages">Counter 1: Express Snacks & Beverages</option>
+              <option value="Counter 2: Hot Meals & Wraps">Counter 2: Hot Meals & Wraps</option>
+              <option value="Counter 3: Bakery & Desserts">Counter 3: Bakery & Desserts</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label small fw-bold mb-1">Schedule Pickup Time</label>
+            <select id="schedule-select" class="form-select form-select-sm fw-semibold">
+              <option value="asap">⚡ ASAP (~8 mins queue)</option>
+              <option value="break">☕ Next Break (11:30 AM)</option>
+              <option value="lunch">🍛 Lunch Hour (1:15 PM)</option>
+              <option value="evening">🍟 Evening Snacks (4:30 PM)</option>
+            </select>
+          </div>
+
+          <!-- Coupon Code -->
+          <div class="mb-3">
+            <label class="form-label small fw-bold mb-1">Promo Coupon Code</label>
+            <div class="input-group input-group-sm">
+              <input type="text" id="coupon-input" placeholder="SNACK10 / EXAM50" class="form-control text-uppercase fw-bold" value="${appliedCoupon ? appliedCoupon.code : ''}">
+              <button class="btn btn-dark fw-bold" id="apply-coupon-btn">Apply</button>
+            </div>
+            ${appliedCoupon ? `<small class="text-success fw-bold d-block mt-1"><i class="bi bi-check-circle-fill me-1"></i>Applied: ${appliedCoupon.description}</small>` : ''}
+          </div>
+
+          <!-- Payment Selection -->
+          <div class="mb-2">
+            <label class="form-label small fw-bold mb-1">Payment Method</label>
+            <div class="row g-1">
+              <div class="col-4">
+                <button class="btn ${selectedPayment === 'campus_wallet' ? 'btn-warning fw-bold' : 'btn-outline-secondary'} btn-sm w-100 text-nowrap pay-method-btn" data-pay="campus_wallet">
+                  💳 Wallet
+                </button>
+              </div>
+              <div class="col-4">
+                <button class="btn ${selectedPayment === 'upi' ? 'btn-warning fw-bold' : 'btn-outline-secondary'} btn-sm w-100 text-nowrap pay-method-btn" data-pay="upi">
+                  📱 UPI / QR
+                </button>
+              </div>
+              <div class="col-4">
+                <button class="btn ${selectedPayment === 'cash' ? 'btn-warning fw-bold' : 'btn-outline-secondary'} btn-sm w-100 text-nowrap pay-method-btn" data-pay="cash">
+                  💵 Cash
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      `;
+
+      // Calculate totals
+      const subtotal = cart.reduce((sum, c) => sum + (c.calculatedPrice * c.quantity), 0);
+      let discount = 0;
+      if (appliedCoupon) {
+        if (appliedCoupon.discountPercent) discount = (subtotal * appliedCoupon.discountPercent) / 100;
+        else if (appliedCoupon.discountAmount) discount = appliedCoupon.discountAmount;
+      }
+      const tax = Math.round((subtotal - discount) * 0.05);
+      const total = Math.max(0, subtotal - discount + tax);
+
+      // Render Footer Bill Summary
+      footer.innerHTML = `
+        <div class="d-flex justify-content-between small text-muted mb-1"><span>Subtotal</span><span>₹${subtotal}</span></div>
+        ${discount > 0 ? `<div class="d-flex justify-content-between small text-success fw-bold mb-1"><span>Discount</span><span>-₹${discount}</span></div>` : ''}
+        <div class="d-flex justify-content-between small text-muted mb-1"><span>GST (5%)</span><span>₹${tax}</span></div>
+        <div class="d-flex justify-content-between small text-success fw-bold mb-2"><span>Student Pickup Fee</span><span>FREE</span></div>
+        <div class="d-flex justify-content-between fs-5 fw-bolder text-dark border-top pt-2 mb-3">
+          <span>Total</span>
+          <span class="text-warning">₹${total}</span>
+        </div>
+
+        <button id="confirm-order-btn" class="btn btn-warning w-100 fw-bold py-2 rounded-3 shadow-sm d-flex align-items-center justify-content-between">
+          <span>Confirm & Generate Token</span>
+          <span class="fw-bolder">₹${total} →</span>
+        </button>
+      `;
+
+      // Wire cart events
+      document.getElementById('clear-cart-btn')?.addEventListener('click', () => {
+        cart = [];
+        updateHeaderBadges();
+        renderCartDrawerContent();
+      });
+
+      document.querySelectorAll('.cart-qty-minus').forEach(b => {
+        b.addEventListener('click', (e) => {
+          const idx = parseInt(e.target.dataset.idx);
+          if (cart[idx].quantity > 1) cart[idx].quantity--;
+          else cart.splice(idx, 1);
+          updateHeaderBadges();
+          renderCartDrawerContent();
+        });
+      });
+
+      document.querySelectorAll('.cart-qty-plus').forEach(b => {
+        b.addEventListener('click', (e) => {
+          const idx = parseInt(e.target.dataset.idx);
+          cart[idx].quantity++;
+          updateHeaderBadges();
+          renderCartDrawerContent();
+        });
+      });
+
+      document.getElementById('apply-coupon-btn')?.addEventListener('click', () => {
+        const code = document.getElementById('coupon-input').value.toUpperCase().trim();
+        const found = COUPONS.find(c => c.code === code);
+        if (found) {
+          if (subtotal >= found.minOrder) {
+            appliedCoupon = found;
+            alert(`Coupon ${found.code} applied successfully!`);
+          } else {
+            alert(`Minimum order of ₹${found.minOrder} required for ${code}.`);
+          }
+        } else {
+          alert('Invalid promo coupon code!');
+        }
+        renderCartDrawerContent();
+      });
+
+      document.querySelectorAll('.pay-method-btn').forEach(b => {
+        b.addEventListener('click', (e) => {
+          selectedPayment = e.currentTarget.dataset.pay;
+          renderCartDrawerContent();
+        });
+      });
+
+      document.getElementById('confirm-order-btn')?.addEventListener('click', () => {
+        if (selectedPayment === 'campus_wallet' && walletBalance < total) {
+          alert(`Insufficient Campus Wallet balance! Available: ₹${walletBalance}, Required: ₹${total}. Please top up your wallet.`);
+          return;
+        }
+
+        if (selectedPayment === 'campus_wallet') {
+          walletBalance -= total;
+          localStorage.setItem('snackpass_wallet', walletBalance.toString());
+        }
+
+        const orderNum = Math.floor(1000 + Math.random() * 9000);
+        const newOrder = {
+          id: `order-${Date.now()}`,
+          tokenNumber: `#SP-${orderNum}`,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          items: [...cart],
+          subtotal,
+          discount,
+          tax,
+          total,
+          paymentMethod: selectedPayment,
+          pickupCounter: document.getElementById('counter-select').value,
+          pickupTimeType: document.getElementById('schedule-select').value,
+          status: 'placed',
+          estimatedMins: 8
+        };
+
+        orders.unshift(newOrder);
+        localStorage.setItem('snackpass_orders', JSON.stringify(orders));
+
+        cart = [];
+        appliedCoupon = null;
+        updateHeaderBadges();
+        cartOffcanvasInstance.hide();
+        openOrderModal(newOrder);
+      });
+    }
+
+    // --- ITEM CUSTOMIZE MODAL ---
+    let currentCustItem = null;
+    let selectedCustOptions = {};
+    let custQty = 1;
+
+    function openCustomizeModal(item) {
+      currentCustItem = item;
+      selectedCustOptions = {};
+      custQty = 1;
+
+      item.customizationOptions.forEach(group => {
+        selectedCustOptions[group.title] = group.choices[0];
+      });
+
+      document.getElementById('cust-modal-title').textContent = item.name;
+      document.getElementById('cust-qty-val').textContent = '1';
+      renderCustModalBody();
+      customizeModalInstance.show();
+    }
+
+    function renderCustModalBody() {
+      const body = document.getElementById('cust-modal-body');
+      
+      body.innerHTML = `
+        <div class="d-flex align-items-center gap-3 p-2 rounded-3 bg-light mb-3">
+          <img src="${currentCustItem.image}" class="rounded-3 object-fit-cover" style="width: 60px; height: 60px;" alt="">
+          <div>
+            <h6 class="fw-bold mb-0">${currentCustItem.name}</h6>
+            <small class="text-muted d-block">${currentCustItem.description}</small>
+            <span class="text-warning fw-bolder small">Base Price: ₹${currentCustItem.price}</span>
+          </div>
+        </div>
+
+        ${currentCustItem.customizationOptions.map(group => `
+          <div class="mb-3">
+            <label class="form-label small fw-bold text-uppercase text-muted">${group.title}</label>
+            <div class="d-flex flex-column gap-2">
+              ${group.choices.map(choice => {
+                const isSelected = selectedCustOptions[group.title]?.id === choice.id;
+                return `
+                  <button class="btn ${isSelected ? 'btn-warning fw-bold' : 'btn-outline-secondary'} text-start d-flex justify-content-between align-items-center py-2 cust-choice-btn" data-group="${group.title}" data-choiceid="${choice.id}">
+                    <span>${choice.name}</span>
+                    <span class="small">${choice.price > 0 ? `+₹${choice.price}` : 'Free'}</span>
+                  </button>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `).join('')}
+      `;
+
+      const optTotal = Object.values(selectedCustOptions).reduce((sum, choice) => sum + choice.price, 0);
+      const totalPerItem = currentCustItem.price + optTotal;
+      const grandTotal = totalPerItem * custQty;
+
+      document.getElementById('cust-modal-total-price').textContent = `₹${grandTotal}`;
+
+      document.querySelectorAll('.cust-choice-btn').forEach(b => {
+        b.addEventListener('click', (e) => {
+          const groupTitle = e.currentTarget.dataset.group;
+          const choiceId = e.currentTarget.dataset.choiceid;
+          const group = currentCustItem.customizationOptions.find(g => g.title === groupTitle);
+          const choice = group.choices.find(c => c.id === choiceId);
+          selectedCustOptions[groupTitle] = choice;
+          renderCustModalBody();
+        });
+      });
+
+      document.getElementById('cust-qty-minus').onclick = () => {
+        if (custQty > 1) {
+          custQty--;
+          document.getElementById('cust-qty-val').textContent = custQty;
+          renderCustModalBody();
+        }
+      };
+
+      document.getElementById('cust-qty-plus').onclick = () => {
+        custQty++;
+        document.getElementById('cust-qty-val').textContent = custQty;
+        renderCustModalBody();
+      };
+
+      document.getElementById('cust-add-to-cart-btn').onclick = () => {
+        const formattedOpts = Object.entries(selectedCustOptions).map(([title, option]) => ({
+          groupTitle: title,
+          option
+        }));
+        addToCart(currentCustItem, formattedOpts, custQty);
+        customizeModalInstance.hide();
+      };
+    }
+
+    // --- ORDER CONFIRMATION MODAL ---
+    function openOrderModal(order) {
+      currentActiveOrder = order;
+      renderOrderModalBody();
+      orderModalInstance.show();
+    }
+
+    function renderOrderModalBody() {
+      const order = currentActiveOrder;
+      const body = document.getElementById('order-modal-body');
+
+      body.innerHTML = `
+        <div class="card bg-dark text-white border-warning p-4 rounded-4 text-center mb-4 shadow">
+          <small class="text-uppercase text-warning fw-bold letter-spacing">Canteen Pick-Up Digital Pass</small>
+          <div class="display-4 fw-bolder text-warning my-2">${order.tokenNumber}</div>
+          <p class="text-light small mb-3">${order.pickupCounter}</p>
+
+          <!-- Order Status Flow Stepper -->
+          <div class="row g-1 text-center small fw-bold border-top border-secondary pt-3">
+            <div class="col-3">
+              <div class="p-1 rounded-2 bg-success text-dark">1. Placed</div>
+            </div>
+            <div class="col-3">
+              <div class="p-1 rounded-2 ${order.status === 'preparing' || order.status === 'ready' || order.status === 'picked_up' ? 'bg-warning text-dark' : 'bg-secondary text-light'}">2. Kitchen</div>
+            </div>
+            <div class="col-3">
+              <div class="p-1 rounded-2 ${order.status === 'ready' || order.status === 'picked_up' ? 'bg-success text-dark' : 'bg-secondary text-light'}">3. Ready</div>
+            </div>
+            <div class="col-3">
+              <div class="p-1 rounded-2 ${order.status === 'picked_up' ? 'bg-info text-dark' : 'bg-secondary text-light'}">4. Picked</div>
+            </div>
+          </div>
+
+          <button id="advance-status-btn" class="btn btn-link btn-sm text-warning mt-2 fw-bold text-decoration-none">
+            <i class="bi bi-arrow-repeat me-1"></i> Advance Kitchen Progress (${order.status.toUpperCase()})
+          </button>
+        </div>
+
+        <div class="card border-0 bg-light p-3 rounded-3">
+          <h6 class="fw-bold small text-muted text-uppercase mb-2">Itemized Summary</h6>
+          ${order.items.map(i => `
+            <div class="d-flex justify-content-between small fw-semibold text-dark mb-1">
+              <span>${i.quantity}x ${i.item.name}</span>
+              <span>₹${i.calculatedPrice * i.quantity}</span>
+            </div>
+          `).join('')}
+          <div class="d-flex justify-content-between fw-bold text-dark border-top pt-2 mt-2">
+            <span>Total Paid (${order.paymentMethod})</span>
+            <span class="text-warning">₹${order.total}</span>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('advance-status-btn')?.addEventListener('click', () => {
+        if (order.status === 'placed') order.status = 'preparing';
+        else if (order.status === 'preparing') order.status = 'ready';
+        else if (order.status === 'ready') order.status = 'picked_up';
+        else order.status = 'placed';
+
+        localStorage.setItem('snackpass_orders', JSON.stringify(orders));
+        renderOrderModalBody();
+      });
+    }
+
+    // --- CAMPUS WALLET RECHARGE ---
+    function handleWalletRecharge() {
+      const amt = parseFloat(document.getElementById('wallet-custom-input').value) || 0;
+      if (amt <= 0) return;
+
+      walletBalance += amt;
+      localStorage.setItem('snackpass_wallet', walletBalance.toString());
+      
+      updateHeaderBadges();
+      
+      const alertBox = document.getElementById('wallet-alert-msg');
+      alertBox.textContent = `✓ Successfully recharged ₹${amt} to your Campus Card!`;
+      alertBox.classList.remove('d-none');
+
+      setTimeout(() => alertBox.classList.add('d-none'), 3000);
+    }
+
+    // --- TOKEN PASS HISTORY MODAL ---
+    function renderHistoryModal() {
+      const body = document.getElementById('history-modal-body');
+
+      if (orders.length === 0) {
+        body.innerHTML = `<div class="text-center py-4 text-muted small fw-bold">No past canteen order tokens found.</div>`;
+        return;
+      }
+
+      body.innerHTML = orders.map(ord => `
+        <div class="card border-0 bg-light p-3 rounded-3 mb-2 shadow-sm">
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <span class="fw-bolder fs-6 text-dark">${ord.tokenNumber}</span>
+            <span class="badge bg-warning text-dark fw-bold">₹${ord.total}</span>
+          </div>
+          <small class="text-muted d-block mb-1">${ord.timestamp} • ${ord.items.length} items • ${ord.pickupCounter}</small>
+          <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill align-self-start">${ord.status.toUpperCase()}</span>
+        </div>
+      `).join('');
+    }
+
+    // --- KIOSK SCREEN MODAL LISTS ---
+    function renderKioskLists() {
+      document.getElementById('kiosk-ready-list').innerHTML = `
+        <div class="col-6"><div class="card bg-success text-dark p-3 text-center rounded-3 fs-3 fw-bolder shadow-sm">#SP-8401</div></div>
+        <div class="col-6"><div class="card bg-success text-dark p-3 text-center rounded-3 fs-3 fw-bolder shadow-sm">#SP-8398</div></div>
+        <div class="col-6"><div class="card bg-success text-dark p-3 text-center rounded-3 fs-3 fw-bolder shadow-sm">#SP-8395</div></div>
+        <div class="col-6"><div class="card bg-success text-dark p-3 text-center rounded-3 fs-3 fw-bolder shadow-sm">#SP-8390</div></div>
+      `;
+
+      document.getElementById('kiosk-preparing-list').innerHTML = `
+        <div class="col-6"><div class="card bg-warning text-dark p-3 text-center rounded-3 fs-3 fw-bolder shadow-sm">#SP-8402</div></div>
+        <div class="col-6"><div class="card bg-warning text-dark p-3 text-center rounded-3 fs-3 fw-bolder shadow-sm">#SP-8403</div></div>
+        <div class="col-6"><div class="card bg-warning text-dark p-3 text-center rounded-3 fs-3 fw-bolder shadow-sm">#SP-8404</div></div>
+        <div class="col-6"><div class="card bg-warning text-dark p-3 text-center rounded-3 fs-3 fw-bolder shadow-sm">#SP-8405</div></div>
+      `;
+    }
+  </script>
+</body>
+</html>
